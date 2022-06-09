@@ -66,6 +66,4 @@ app.get('/', (req, res) => {
   res.send('Hello ' + req.session.username);
 });
 
-app.listen('8888', () => {
-  console.log('Application started');
-});
+module.exports = app;
