@@ -1,49 +1,58 @@
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const csrf = require('csurf');
+const crypto = require("crypto");
 const path = require('path');
+const sql_handler = require('./sql_handler.js');
 
 const app = express();
-
-app.use(express.static('public'))
-
-const sess = {
-  secret: 'secretsecretsecret',
-  cookie: { maxAge: 60000 },
-  resave: false,
-  saveUninitialized: false,
-}
 
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1)
   sess.cookie.secure = true
 }
 
-app.use(session(sess))
+const sess = {
+  secret: crypto.randomBytes(20).toString('hex'),
+  cookie: { maxAge: 60000 },
+  resave: false,
+  saveUninitialized: false,
+}
+const csrfProtection = csrf({ cookie: false });
 
+
+app.use(express.static('public'))
+app.use(session(sess))
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.set('view engine', 'pug');
 
 // GET /login page
-app.get('/login', (req, res) => {
-  res
-    .type('text/html')
-    .sendFile('/login.html', {root: 'public'});
+app.get('/login', csrfProtection, (req, res) => {
+  res.render('login', { csrfToken: req.csrfToken() });
 });
 
 // POST userinfo from /login page
-app.post('/login', (req, res) => {
+app.post('/login', csrfProtection, (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   // Check users
-  if (username === 'admin' && password === 'password') {
-    req.session.regenerate((err) => {
-      req.session.username = 'admin';
-      res.redirect('/');
-    });
-  } else {
-    res.redirect('/login');
-  }
+  sql = sql_handler.UserAuth(username, password);
+  Promise.all([sql]).then((value) => {
+    username_check = value[0][0];
+    password_check = value[0][1];
+
+    if (username === username_check && password === password_check) {
+      req.session.regenerate((err) => {
+        req.session.username = username;
+        res.redirect('/');
+      });
+    } else {
+      res.redirect('/login');
+    }
+  });
+  
 });
 
 // GET /logout page
@@ -64,6 +73,12 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => {
   res.send('Hello ' + req.session.username);
+});
+
+// Default Error
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Internal Server Error');
 });
 
 module.exports = app;
