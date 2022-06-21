@@ -72,7 +72,11 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello ' + req.session.username);
+  username = req.session.username;
+  sql = sql_handler.showFollowerPost(username);
+  Promise.all([sql]).then((value) => {
+    res.render('home', {'posts': value[0]});
+  })
 });
 
 // Default Error

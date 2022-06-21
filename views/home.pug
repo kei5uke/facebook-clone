@@ -1,0 +1,29 @@
+doctype html
+head
+  link(rel='stylesheet' type='text/css' href='/stylesheets/stylesheet.css')
+  title Fakebook
+.top_menu
+  menu
+    li
+      a(href='#home') Home
+    li
+      a(href='#friend') Friend
+    li
+      a(href='#my_page') My Page
+.posts
+  .post
+    .user_info
+      img(src='/images/user_pic.png' alt='userpic')
+      |             Mrs.Crocodile &nbsp;
+      span.post_time 2022-Jun-5
+    .post_info
+      p Take a look at my make up bitches.
+  
+  for post in posts
+    .post
+      .user_info
+        img(src='/images/user_pic.png' alt='userpic')
+        |             #{post.un} &nbsp;
+        span.post_time #{post.time}
+      .post_info
+        p #{post.post}
