@@ -39,16 +39,17 @@ Promise.all([f]).then((value) => {
     console.log(value[0][0]);
 }) ;  */
 
-async function getFollowerPost(con, userName){
+async function getFollowerPost(con, userName, start, step){
     return new Promise((resolve, reject) => {
-        var sql = 'select username as un , post_date_time as time, post_description as post from POST inner join USER on POST.user_id = USER.user_id where POST.user_id in (SELECT USER.user_id from USER inner join FOLLOW_FOLLOWED on USER.user_id = FOLLOW_FOLLOWED.followed_id where FOLLOW_FOLLOWED.follower_id = (select user_id from USER where username ="' +userName+ '")) order by post_date_time desc;';
+        var sql = 'select username as un , post_date_time as time, post_description as post from POST inner join USER on POST.user_id = USER.user_id where POST.user_id in (SELECT USER.user_id from USER inner join FOLLOW_FOLLOWED on USER.user_id = FOLLOW_FOLLOWED.followed_id where FOLLOW_FOLLOWED.follower_id = (select user_id from USER where username ="' +userName+ '")) order by post_date_time desc limit '+ String(start) + ',' + String(step) +';';
         con.query(sql, (err, row, field) => {
             if(err){
                 reject(err);
             }
-            if (row.length == 0) {
+            if (!row) {
                 // Modify it later
-                console.log("NO POST")
+                console.log("NO POST");
+                resolve(0);
             }else{
                 var posts = []
 
@@ -67,9 +68,9 @@ async function getFollowerPost(con, userName){
     });
 }
 
-async function showFollowerPost(username){
+async function showFollowerPost(username, start, step){
     const con = await mysql.createConnection(db_info);
-    const tmp = await getFollowerPost(con, username);
+    const tmp = await getFollowerPost(con, username, start, step);
     con.end();
     return tmp
 }
@@ -86,10 +87,11 @@ UserAuth('keisuke135', 'mDijin3456').then(value => {
     //console.log(value)
 }) */
 // use this
-// tmp = showFollowerPost('keisuke135');
+// tmp = showFollowerPost('keisuke135', 10, 33);
 // Promise.all([tmp]).then((value) => {
-//     console.log(value[0])
-//     for(let i = 0; i<value.length; i++){
+//     console.log(value[0].length)
+//     for(let i = 0; i<value[0].length; i++){
+//         if (value == 0)break;
 //         console.log(value[0][i].un);
 //     } 
 // })
