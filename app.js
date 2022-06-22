@@ -18,6 +18,7 @@ const sess = {
   cookie: { maxAge: 60000 },
   resave: false,
   saveUninitialized: false,
+  start: 0
 }
 const csrfProtection = csrf({ cookie: false });
 
@@ -46,6 +47,7 @@ app.post('/login', csrfProtection, (req, res) => {
     if (username === username_check && password === password_check) {
       req.session.regenerate((err) => {
         req.session.username = username;
+        req.session.start = 0;
         res.redirect('/');
       });
     } else {
@@ -72,11 +74,34 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-  username = req.session.username;
-  sql = sql_handler.showFollowerPost(username);
+  var username = req.session.username;
+  var start = req.session.start;
+  sql = sql_handler.showFollowerPost(username, start, 3);
   Promise.all([sql]).then((value) => {
-    res.render('home', {'posts': value[0]});
+    if (value != 0){
+      res.render('home', {'posts': value[0]});
+      req.session.start += value[0].length;
+      req.session.save()
+    }
   })
+});
+
+app.post('/update', (req, res) => {
+  var username = req.session.username;
+  var start = req.session.start;
+  sql = sql_handler.showFollowerPost(username, start, 5);
+  Promise.all([sql]).then((value) => {
+    res.send(value[0]);
+    req.session.start += value[0].length;
+    req.session.save()
+  });
+
+});
+
+app.post('/refresh', (req, res) => {
+  req.session.start = 0;
+  req.session.save();
+  res.redirect('/');
 });
 
 // Default Error

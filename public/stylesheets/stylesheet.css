@@ -32,6 +32,7 @@ div.top_menu li a {
 /* Posts section */
 .posts {
     margin-top: 75px;
+    margin-bottom: 5px;
 }
 
 /* Each post */
@@ -102,4 +103,23 @@ div.top_menu li a {
     border: none;
     cursor: pointer;
     width: 100%;
+}
+
+.reload_butt input {
+    position: fixed;
+    margin: 1em 0; 
+    padding: 0.6em 1em; 
+    font-size: 1em; 
+    background-color: #ff1a1a; 
+    color: #FFF; 
+    cursor: pointer; 
+    border-radius: 3px; 
+    border: 0; 
+    transition: 0.3s; 
+    bottom: 0px;
+    right: 30px;
+}
+
+.reload_butt input:hover{
+    background-color: #ff1a1a87;
 }
