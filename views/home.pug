@@ -10,20 +10,25 @@ head
       a(href='#friend') Friend
     li
       a(href='#my_page') My Page
-.posts
-  .post
-    .user_info
-      img(src='/images/user_pic.png' alt='userpic')
-      |             Mrs.Crocodile &nbsp;
-      span.post_time 2022-Jun-5
-    .post_info
-      p Take a look at my make up bitches.
+.posts(id = 'home_posts')
+  //- .post
+  //-   .user_info
+  //-     img(src='/images/user_pic.png' alt='userpic')
+  //-     |             Mrs.Crocodile &nbsp;
+  //-     span.post_time 2022-Jun-5
+  //-   .post_info
+  //-     p Take a look at my make up bitches.
   
   for post in posts
-    .post
+    .post(id = 'post')
       .user_info
         img(src='/images/user_pic.png' alt='userpic')
         |             #{post.un} &nbsp;
         span.post_time #{post.time}
       .post_info
         p #{post.post}
+
+.reload_butt  
+  input(type='button' value='Update' id="update_home")
+  
+script(src='/client.js')
