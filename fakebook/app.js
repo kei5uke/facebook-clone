@@ -73,10 +73,12 @@ app.use((req, res, next) => {
     }
 });
 
+// Main Home Page
+// Shows all the followers post
 app.get('/', (req, res) => {
   var username = req.session.username;
   var start = req.session.start;
-  sql = sql_handler.showFollowerPost(username, start, 3);
+  sql = sql_handler.showFollowerPost(username, start, 5);
   Promise.all([sql]).then((value) => {
     if (value != 0){
       res.render('home', {'posts': value[0]});
@@ -86,6 +88,7 @@ app.get('/', (req, res) => {
   })
 });
 
+// When user request more posts
 app.post('/update', (req, res) => {
   var username = req.session.username;
   var start = req.session.start;
@@ -98,6 +101,7 @@ app.post('/update', (req, res) => {
 
 });
 
+// When user refresh the page, reset the session value
 app.post('/refresh', (req, res) => {
   req.session.start = 0;
   req.session.save();
