@@ -1,0 +1,50 @@
+doctype html
+head
+  link(rel='stylesheet' type='text/css' href='/stylesheets/stylesheet.css')
+  title Fakebook
+.top_menu
+  menu
+    li
+      a(href='/') Home
+    li
+      a(href='/friend') Friend
+    li
+      a(href='#') My Page
+.friends(id = 'friends')
+  
+  details
+    summary Follow them Back!
+    for request in requests 
+       .friend(id = request.username)
+        .friend_user_info
+          img(src='/images/user_pic.png' alt='userpic')
+          |             #{request.username} &nbsp;
+          form(method='POST' action='/add_friend' id="form_"+request.username)
+            input(type="hidden" name="username" value=request.username)
+            button(type="button" onclick="send_friend_request('"+request.username+"')") FOLLOW BACK
+
+  details
+    summary Following
+    for following in followings
+      .friend(id = 'friend')
+        .friend_user_info
+          img(src='/images/user_pic.png' alt='userpic')
+          |             #{following.username} &nbsp;
+    
+  details
+    summary Followers
+    for follower in followers
+      .friend(id = 'friend')
+          .friend_user_info
+            img(src='/images/user_pic.png' alt='userpic')
+            |             #{follower.username} &nbsp;
+      
+  if message
+    .post(id = 'post')
+      .user_info
+        img(src='/images/user_pic.png' alt='userpic')
+        |             Your Friend &nbsp;
+      .post_info
+        p #{message}
+  
+script(src='/client.js')

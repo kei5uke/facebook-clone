@@ -27,6 +27,14 @@ head
         span.post_time #{post.time}
       .post_info
         p #{post.post}
+      
+  if message
+    .post(id = 'post')
+      .user_info
+        img(src='/images/user_pic.png' alt='userpic')
+        |             Your Friend &nbsp;
+      .post_info
+        p #{message}
 
 .reload_butt  
   input(type='button' value='Update' id="update_home")

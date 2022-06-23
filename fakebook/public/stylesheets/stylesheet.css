@@ -123,3 +123,35 @@ div.top_menu li a {
 .reload_butt input:hover{
     background-color: #ff1a1a87;
 }
+
+/* Friends section */
+.friends {
+    margin-top: 100px;
+    margin-bottom: 5px;
+}
+
+/* Each friend */
+.friend {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: darkcyan;
+}
+
+.friend_user_info {
+    color: white;
+    margin-left: 5px;
+    display: flex;
+    align-items: center
+}
+
+.friend_user_info img {
+    border-radius: 10%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border: 1px solid black;
+    margin-right: 5px;
+    width: 70px;
+    height: 70px;
+}

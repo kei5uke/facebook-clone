@@ -77,22 +77,66 @@ app.use((req, res, next) => {
 // Shows all the followers post
 app.get('/', (req, res) => {
   var username = req.session.username;
-  var start = req.session.start;
-  sql = sql_handler.showFollowerPost(username, start, 5);
+  sql = sql_handler.getFollowingPost(username, 0, 5);
   Promise.all([sql]).then((value) => {
-    if (value != 0){
+    if (value){
       res.render('home', {'posts': value[0]});
-      req.session.start += value[0].length;
+      req.session.start = value[0].length;
       req.session.save()
+    }else{
+      res.render('home', {'message': "LOL You don't have friends"})
     }
   })
+});
+
+app.get('/friend', (req, res) => {
+  var username = req.session.username;
+  requests = sql_handler.getFriendRequests(username);
+  following = sql_handler.getFollowingList(username);
+  follower = sql_handler.getFollowerList(username);
+  Promise.all([requests, following, follower]).then((value) => {
+      if (value){  
+        res.render('friend', {'requests':value[0],'followings':value[1], 'followers':value[2]})  
+      }else{
+        res.render('friend', {'message': "LOL You don't have friends"})
+      }
+  });
+});
+
+// Used when user wants to followe back
+app.post('/add_friend', (req, res) => {
+  var followed_id = null;
+  var follower_id = null;
+  if(req.body.username){
+    sql1 = sql_handler.getUserId(req.session.username);
+    sql2 = sql_handler.getUserId(req.body.username);
+    Promise.all([sql1, sql2]).then((value) => {
+        if (value[0].length == 0 || value[1].length == 0){
+            console.log('The user does not exist');
+            return;
+        }
+        follower_id = value[0][0].id;
+        followed_id = value[1][0].id;
+
+        sql3 = sql_handler.addFollower(follower_id, followed_id);
+        Promise.all([sql3]).then((value) => {
+          if (value == 0){
+              console.log('Something Went Wrong');
+              return;
+          }
+          res.sendStatus(204);
+        });
+    });
+  }else{
+    res.sendStatus(403);
+  }
 });
 
 // When user request more posts
 app.post('/update', (req, res) => {
   var username = req.session.username;
   var start = req.session.start;
-  sql = sql_handler.showFollowerPost(username, start, 5);
+  sql = sql_handler.getFollowerPost(username, start, 5);
   Promise.all([sql]).then((value) => {
     res.send(value[0]);
     req.session.start += value[0].length;

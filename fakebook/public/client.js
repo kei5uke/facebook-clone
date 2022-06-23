@@ -33,6 +33,11 @@ button.addEventListener('click', function(e) {
     });
 });
 
+function send_friend_request(id){
+  document.getElementById("form_"+id).submit();
+  const element = document.getElementById(id)
+  element.parentNode.removeChild(element);
+}
 
 if (window.performance) {
     if (window.performance.navigation.type === 1) {
