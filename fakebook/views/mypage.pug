@@ -9,24 +9,17 @@ head
     li
       a(href='/friend') Friend
     li
-      a(href='/mypage') My Page
+      a(href='/my_page') My Page
 .posts(id = 'home_posts')
-  //- .post
-  //-   .user_info
-  //-     img(src='/images/user_pic.png' alt='userpic')
-  //-     |             Mrs.Crocodile &nbsp;
-  //-     span.post_time 2022-Jun-5
-  //-   .post_info
-  //-     p Take a look at my make up bitches.
-  
-  for post in posts
+
+  for mypost in myposts
     .post(id = 'post')
       .user_info
         img(src='/images/user_pic.png' alt='userpic')
-        |             #{post.un} &nbsp;
-        span.post_time #{post.time}
+        |             #{username} &nbsp;
+        span.post_time #{mypost.time}
       .post_info
-        p #{post.post}
+        p #{mypost.post}
       
   if message
     .post(id = 'post')
@@ -35,8 +28,5 @@ head
         |             Your Friend &nbsp;
       .post_info
         p #{message}
-
-.reload_butt  
-  input(type='button' value='Update' id="update_home")
   
 script(src='/client.js')

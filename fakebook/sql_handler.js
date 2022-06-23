@@ -44,7 +44,6 @@ async function queryFollowingPost(con, userName, start, step){
                 resolve(0);
             }else{
                 var posts = []
-
                 for(var i=0; i<row.length; i++){
                     var post =  {
                         'un':row[i].un,
@@ -217,6 +216,48 @@ async function addFollower(follower_id, followed_id){
 //     console.log(value)
 // })
 
+async function queryUserPosts(con, username){
+    return new Promise((resolve, reject) => {
+        var sql = "select post_date_time as time, post_description as post from POST where user_id = (select user_id from USER where username = '"+username+"');";
+        con.query(sql, (err, row, field) => {
+            if(err){
+                reject(err);
+            }
+            console.log(row);
+            if (row.length == 0) {
+                console.log("NO POST");
+                resolve(0);
+            }else{
+                var posts = []
+                for(var i=0; i<row.length; i++){
+                    var post =  {
+                        'time':row[i].time,
+                        'post':row[i].post
+                    }
+                    posts.push(post);
+                }
+                resolve(posts);
+            }
+        });
+    });
+}
+async function getUserPosts(username){
+    const con = await mysql.createConnection(db_info);
+    const tmp = await queryUserPosts(con, username);
+    con.end();
+    return tmp
+}
+// tmp = getUserPosts('keisuke135');
+// Promise.all([tmp]).then((value) => {
+//     if (value == 0){
+//         console.log('Empty');
+//         return;
+//     }
+//     console.log(value)
+// })
+
+
+
 module.exports = {UserAuth, getFollowerList, getFollowingList, 
     getFollowingPost, addFollower, getFriendRequests,
-    getUserId};
+    getUserId, getUserPosts};

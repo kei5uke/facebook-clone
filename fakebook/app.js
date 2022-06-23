@@ -77,7 +77,7 @@ app.use((req, res, next) => {
 // Shows all the followers post
 app.get('/', (req, res) => {
   var username = req.session.username;
-  sql = sql_handler.getFollowingPost(username, 0, 5);
+  sql = sql_handler.getFollowingPost(username, 0, 3);
   Promise.all([sql]).then((value) => {
     if (value){
       res.render('home', {'posts': value[0]});
@@ -136,13 +136,30 @@ app.post('/add_friend', (req, res) => {
 app.post('/update', (req, res) => {
   var username = req.session.username;
   var start = req.session.start;
-  sql = sql_handler.getFollowerPost(username, start, 5);
+  sql = sql_handler.getFollowingPost(username, start, 3);
   Promise.all([sql]).then((value) => {
+    if(value == 0){
+      res.sendStatus(204);
+      return;
+    }
+    //console.log(value[0]);
     res.send(value[0]);
     req.session.start += value[0].length;
     req.session.save()
   });
 
+});
+
+app.get('/mypage', (req, res) => {
+  var username = req.session.username;
+  sql = sql_handler.getUserPosts(username);
+  Promise.all([sql]).then((value) => {
+    if (value){  
+      res.render('mypage', {'username':username, 'myposts':value[0]}); 
+    }else{
+      res.render('mypage', {'message': "You don't have any post"})
+    }
+  });
 });
 
 // When user refresh the page, reset the session value
