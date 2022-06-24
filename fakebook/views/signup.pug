@@ -3,16 +3,14 @@ head
   link(rel='stylesheet' type='text/css' href='/stylesheets/stylesheet.css')
   title Fakebook
 .login_form
-  form(method='POST' action='/login')
-    input(type="hidden" name="_csrf" value=csrfToken)
+  form(method='POST' action='/signup')
     label(for='uname')
       b Username
     input(type='text' name='username' required='')
     label(for='psw')
       b Password
     input(type='password' name='password' required='')
-    button(type='submit') Login
-    label
-      input(type='checkbox' checked='checked' name='remember')
-      |  Remember me <br><br>
-    a(href='/signup') Do you want to register?
+    button(type='submit') Sign UP
+
+    if message
+        .message !{message}

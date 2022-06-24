@@ -58,6 +58,25 @@ app.post('/login', csrfProtection, (req, res) => {
   
 });
 
+app.get('/signup', (req, res) => {
+  res.render('signup');
+});
+
+app.post('/signup', (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  sql = sql_handler.insertUserInfo(username, password);
+  Promise.all([sql]).then((value) => {
+    if (value == 0){
+      res.render('signup', {'message':"The input are not allowed"});
+    }
+    res.render('signup', {'message':"Welcome! Login <a href='/login'>Here</a>"});;
+  }).catch(err => {
+    res.render('signup', {'message':"The input are not allowed"});
+  });
+
+});
+
 // GET /logout page
 app.get('/logout', (req, res) => {
   req.session.destroy((err) => {

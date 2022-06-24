@@ -40,7 +40,7 @@ button.open-button(onclick='openPost()') CREATE POST
 #FormPost.form-popup
   form.form-post(action='/create_post' method='post')
     label(for='post')
-      b Write HERE!
+      b Write HERE!<br>
     input(type='text' placeholder="What's on your mind?" name='post' required='')
     button.btn(type='submit' onclick='closePost()') POST
     button.btn.cancel(type='button' onclick='closePost()') Close

@@ -151,7 +151,7 @@ async function getUserId(username){
 
 async function queryGettingFriendRequests(con, id){
     return new Promise((resolve, reject) => {
-        var sql = "select username from USER where user_id in (select follower_id as id from FOLLOW_FOLLOWED where followed_id = 1 and follower_id not in (select followed_id from FOLLOW_FOLLOWED where follower_id ="+id.toString()+"));";
+        var sql = "select username from USER where user_id in (select follower_id as id from FOLLOW_FOLLOWED where followed_id="+id.toString()+" and follower_id not in (select followed_id from FOLLOW_FOLLOWED where follower_id ="+id.toString()+"));";
         con.query(sql, (err, row, field) => {
             if(err){
                 reject(err);
@@ -273,8 +273,33 @@ async function insertPost(username, time, post){
     return tmp
 }
 
+async function queryInsertUserInfo(con, username, password){
+    return new Promise((resolve, reject) => {
+        var sql = "insert into USER (username, password) VALUE ('"+username+"', '"+password+"');";
+        con.query(sql, (err, row, field) => {
+            if(err){
+                reject(err);
+            }
+            if(row){
+                if(row.affectedRows){
+                    resolve(1);
+                }else{
+                    resolve(0);
+                }
+            }else{
+                resolve(0);
+            }
+        });
+    });
+}
+async function insertUserInfo(username, password){
+    const con = await mysql.createConnection(db_info);
+    const tmp = await queryInsertUserInfo(con, username, password);
+    con.end();
+    return tmp
+}
 
 
 module.exports = {UserAuth, getFollowerList, getFollowingList, 
     getFollowingPost, addFollower, getFriendRequests,
-    getUserId, getUserPosts, insertPost};
+    getUserId, getUserPosts, insertPost, insertUserInfo};
