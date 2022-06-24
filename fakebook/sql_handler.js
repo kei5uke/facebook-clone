@@ -207,23 +207,13 @@ async function addFollower(follower_id, followed_id){
     return tmp
 }
 
-// tmp = addingFollower(6, 7);
-// Promise.all([tmp]).then((value) => {
-//     if (value == 0){
-//         console.log('Empty');
-//         return;
-//     }
-//     console.log(value)
-// })
-
 async function queryUserPosts(con, username){
     return new Promise((resolve, reject) => {
-        var sql = "select post_date_time as time, post_description as post from POST where user_id = (select user_id from USER where username = '"+username+"');";
+        var sql = "select post_date_time as time, post_description as post from POST where user_id = (select user_id from USER where username = '"+username+"') order by time desc;";
         con.query(sql, (err, row, field) => {
             if(err){
                 reject(err);
             }
-            console.log(row);
             if (row.length == 0) {
                 console.log("NO POST");
                 resolve(0);
@@ -256,8 +246,35 @@ async function getUserPosts(username){
 //     console.log(value)
 // })
 
+async function queryPosting(con, id, time, post){
+    return new Promise((resolve, reject) => {
+        var sql = "insert into POST (user_id, post_date_time, post_description) values ("+id.toString()+", '"+time+"', '"+post+"');";
+        con.query(sql, (err, row, field) => {
+            if(err){
+                reject(err);
+            }
+            if(row){
+                if(row.affectedRows){
+                    resolve(1);
+                }else{
+                    resolve(0);
+                }
+            }else{
+                resolve(0);
+            }
+        });
+    });
+}
+async function insertPost(username, time, post){
+    const con = await mysql.createConnection(db_info);
+    const userid = await getUserId(username);
+    const tmp = await queryPosting(con, userid[0].id, time, post);
+    con.end();
+    return tmp
+}
+
 
 
 module.exports = {UserAuth, getFollowerList, getFollowingList, 
     getFollowingPost, addFollower, getFriendRequests,
-    getUserId, getUserPosts};
+    getUserId, getUserPosts, insertPost};

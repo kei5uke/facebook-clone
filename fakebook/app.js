@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const csrf = require('csurf');
 const crypto = require("crypto");
 const path = require('path');
+const dateTime =  require('node-datetime');
 const sql_handler = require('./sql_handler.js');
 
 const app = express();
@@ -60,7 +61,7 @@ app.post('/login', csrfProtection, (req, res) => {
 // GET /logout page
 app.get('/logout', (req, res) => {
   req.session.destroy((err) => {
-    res.redirect('/');
+    res.redirect('/login');
   });
 });
 
@@ -167,6 +168,22 @@ app.post('/refresh', (req, res) => {
   req.session.start = 0;
   req.session.save();
   res.redirect('/');
+});
+
+app.post('/create_post', (req, res) => {
+  var username = req.session.username;
+  var time = dateTime.create().format('Y-m-d H:M:S');
+  var post = req.body.post;
+
+  sql = sql_handler.insertPost(username, time, post);
+  Promise.all([sql]).then((value) => {
+    if (value == 0){
+        console.log('Something Went Wrong');
+        return;
+    }
+    res.sendStatus(204);
+  });
+
 });
 
 // Default Error

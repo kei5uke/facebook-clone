@@ -54,16 +54,11 @@ if (window.performance) {
         });
     }
   }
-// setInterval(function() {
-//     fetch('/update', {method: 'GET'})
-//       .then(function(response) {
-//         if(response.ok) return response.json();
-//         throw new Error('Request failed.');
-//       })
-//       .then(function(data) {
-//         console.log(data);
-//       })
-//       .catch(function(error) {
-//         console.log(error);
-//       });
-//   }, 1000);
+
+function openPost() {
+  document.getElementById("FormPost").style.display = "block";
+}
+
+function closePost() {
+  document.getElementById("FormPost").style.display = "none";
+}
