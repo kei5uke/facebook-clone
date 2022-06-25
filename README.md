@@ -1,6 +1,12 @@
 # fakebook (Mini facebook clone app)
 As a Node.js Tutorial, I created facebook clone appication.  
 
+## Usage
+Run the command below
+```
+node bin/var
+```
+
 ## Built with
 - Node.js
 - Express
@@ -36,6 +42,7 @@ As a Node.js Tutorial, I created facebook clone appication.
 
 ## Missing Features  
 - [x] CSRF Module
-- [ ] SQL Injection
+- [ ] SQL Injection Prevention
 - [ ] Brute Force Prevention
+- [ ] Image Upload
 - [ ] etc .. 
