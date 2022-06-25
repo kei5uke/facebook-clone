@@ -1,5 +1,5 @@
-# fakebook (Mini facebook clone app)
-As a Node.js Tutorial, I created facebook clone appication.  
+# fakebook (Mini Facebook Clone App)
+As a Node.js Tutorial, I created Facebook clone application.  
 
 ## Usage
 Run the command below
