@@ -12,6 +12,16 @@ head
       a(href='/mypage') My Page
 .friends(id = 'friends')
   
+  - var mgs = "Search USER Here"
+  if search_message 
+    msg = serch_message
+  
+  .search(id  = "search")
+    form(id='search_form')
+      input(type='text' placeholder=msg name='word' required='')
+      button(type='submit' id='search_word') SEARCH
+  
+    
   details
     summary Follow them Back!
     for request in requests 

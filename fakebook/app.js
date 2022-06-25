@@ -27,6 +27,7 @@ const csrfProtection = csrf({ cookie: false });
 app.use(express.static('public'))
 app.use(session(sess))
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.set('view engine', 'pug');
 
@@ -121,6 +122,22 @@ app.get('/friend', (req, res) => {
         res.render('friend', {'message': "LOL You don't have friends"})
       }
   });
+});
+
+app.post('/search_user', (req, res) => {
+  var word = req.body.word;
+  sql = sql_handler.searchWord(word);
+  if (word){
+    Promise.all([sql]).then((value) => {
+      if(value == 0){
+        res.sendStatus(204);
+        return;
+      }
+      res.send(value[0])
+    });
+  }else{
+    res.sendStatus(403);
+  }
 });
 
 // Used when user wants to followe back

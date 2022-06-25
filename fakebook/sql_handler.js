@@ -300,6 +300,36 @@ async function insertUserInfo(username, password){
 }
 
 
+async function querySearchWord(con, word){
+    return new Promise((resolve, reject) => {
+        var sql = "select username from USER where username like '"+word+"%' limit 3;";
+        con.query(sql, (err, row, field) => {
+            if(err){
+                reject(err);
+            }
+            if (row.length == 0) {
+                console.log("NO USER");
+                resolve(0);
+            }else{
+                var users = []
+                for(var i=0; i<row.length; i++){
+                    var user =  {
+                        'username':row[i].username
+                    }
+                    users.push(user);
+                }
+                resolve(users);
+            }
+        });
+    });
+}
+async function searchWord(username, time, post){
+    const con = await mysql.createConnection(db_info);
+    const tmp = await querySearchWord(con, username);
+    con.end();
+    return tmp
+}
+
 module.exports = {UserAuth, getFollowerList, getFollowingList, 
     getFollowingPost, addFollower, getFriendRequests,
-    getUserId, getUserPosts, insertPost, insertUserInfo};
+    getUserId, getUserPosts, insertPost, insertUserInfo, searchWord};
