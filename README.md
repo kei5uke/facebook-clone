@@ -44,5 +44,5 @@ node bin/var
 - [x] CSRF Module
 - [ ] SQL Injection Prevention
 - [ ] Brute Force Prevention
-- [ ] Image Upload
+- [ ] Image Uploading Feature
 - [ ] etc .. 
